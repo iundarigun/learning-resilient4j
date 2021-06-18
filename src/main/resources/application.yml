@@ -1,0 +1,35 @@
+management:
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        # https://resilience4j.readme.io/docs/retry
+        maxRetryAttempts: 3
+        waitDuration: 2s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+    instances:
+      retry-test:
+        baseConfig: default
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 30
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 30
+        waitDurationInOpenState: 50s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 20
+        registerHealthIndicator: true
+    instances:
+      circuitbreaker-test:
+        registerHealthIndicator: true
+        baseConfig: default
